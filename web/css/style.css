@@ -1,0 +1,39 @@
+body{
+    padding: 0;
+    overflow-x: hidden
+}
+.dropdown-menu{
+    padding: 0 10px;
+    border-radius: 0;
+}
+.search{
+    max-width: calc(100vw - 30px);
+}
+
+.br-0{
+    border-radius: 0 !important
+}
+.custom-control-label{
+    cursor: pointer !important
+}
+.c-p{
+    cursor: pointer;
+}
+input.form-control{
+    padding-bottom: 0 !important;
+}
+.save-button{
+    margin: 0 0 10px;
+    width: 100%;
+    min-width: 300px;
+}
+.wrapper{
+    padding: 5px 0px;
+    box-shadow: none;
+    width: calc(100vw + 15px);
+    max-height: 350px;
+    min-height: 350px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border-radius: 0px !important;
+}

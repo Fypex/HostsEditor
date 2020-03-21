@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="/img/logo.png" type="image/png">
+    <script type="text/javascript" src="/eel.js"></script>
+    <title>Hosts editor</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!--<div class="md-form p-0 m-0">-->
+      <!--<input type="text" placeholder="Search" class="form-control px-2 search">-->
+    <!--</div>-->
+    <div class="card wrapper">
+        <div class="card-body p-0 m-0 ips_list">
+
+        </div>
+    </div>
+
+
+    <div class="card mt-2 mx-2 mb-2">
+        <div class="card-body pt-3 pb-2 d-flex justify-content-between">
+            <div class="md-form d-inline w-100 mx-2 my-0">
+                <input type="text" id="url" class="form-control">
+                <label for="url">Url</label>
+            </div>
+            <div class="md-form d-inline w-100 mx-2 my-0">
+                <input type="text" id="ip" class="form-control">
+                <label for="ip">Ip</label>
+            </div>
+            <div class="md-form d-inline w-100 mx-2 my-0">
+                <input type="text" id="desc" class="form-control">
+                <label for="desc">Description</label>
+            </div>
+            <div>
+                <button onclick="add_record()" type="button" class="btn btn-primary btn-sm float-right">Add</button>
+            </div>
+        </div>
+
+    </div>
+    <script type="text/javascript" src="/js/app.js"></script>
+    <script type="text/javascript" src="/main.js"></script>
+
+    <script>
+        document.oncontextmenu = cmenu; function cmenu() { return false; }
+    </script>
+    <script>
+        function preventSelection(element){
+            var preventSelection = false;
+            function addHandler(element, event, handler){
+                if (element.attachEvent) element.attachEvent('on' + event, handler);
+                else if (element.addEventListener) element.addEventListener(event, handler, false);  }
+            function removeSelection(){
+                if (window.getSelection) { window.getSelection().removeAllRanges(); }
+                else if (document.selection && document.selection.clear)
+                    document.selection.clear();
+            }
+
+            addHandler(element, 'mousemove', function(){ if(preventSelection) removeSelection(); });
+            addHandler(element, 'mousedown', function(event){ var event = event || window.event; var sender = event.target || event.srcElement; preventSelection = !sender.tagName.match(/INPUT|TEXTAREA/i) ;});
+
+            function killCtrlA(event){
+                var event = event || window.event;
+                var sender = event.target || event.srcElement;
+                if (sender.tagName.match(/INPUT|TEXTAREA/i)) return;
+                var key = event.keyCode || event.which;
+                if ((event.ctrlKey && key == 'U'.charCodeAt(0)) || (event.ctrlKey && key == 'A'.charCodeAt(0)) || (event.ctrlKey && key == 'S'.charCodeAt(0)))  // 'A'.charCodeAt(0) можно заменить на 65
+                { removeSelection();
+                    if (event.preventDefault) event.preventDefault();
+                    else event.returnValue = false;}}
+            addHandler(element, 'keydown', killCtrlA);
+            addHandler(element, 'keyup', killCtrlA);
+        }
+        preventSelection(document);
+    </script>
+</body>
+</html>
