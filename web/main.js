@@ -13,11 +13,13 @@ function add_record(){
         toastr.warning('IP cannot be empty');
         return 0;
     }
-
+    if(!ValidateIPaddress(ip)){
+        toastr.warning('Invalid format IP');
+        return 0;
+    }
     eel.get_data()(function(response){
         length = response.length
         response[length] = [length,'#'+ip+' '+url+' # '+desc];
-        console.log(response);
         eel.save(response)();
         show_data(response)
 
@@ -46,12 +48,16 @@ function delete_record(obj) {
 function changeStatus(obj){
     status = $(obj).prop('checked');
     number = $(obj).attr('data-number');
-
+    console.log(status);
     eel.get_data()(function(response){
 
         $(response).each(function( index, el) {
+
+            text = el[1].replace(/\s+/g, ' ');
+            str = text.replace('# ', '#');
+
             if(el[0] === parseInt(number)){
-                str = el[1].replace(/\s+/g, ' ');
+
                 if(status === 'true'){
                     str = str.slice(1);
                     $('.card_number_'+number).removeClass('alert-warning');
@@ -67,7 +73,7 @@ function changeStatus(obj){
 
         });
 
-        eel.save(response)()
+        eel.save(response)();
         show_data(response)
 
     });
@@ -90,6 +96,10 @@ function updateInfo(obj) {
     }
     if(ip === ''){
         ip = '127.0.0.1'
+    }
+    if(!ValidateIPaddress(ip)){
+        toastr.warning('Invalid format IP');
+        return 0;
     }
 
 
@@ -120,6 +130,8 @@ function updateInfo(obj) {
 
         });
 
+
+
         eel.save(response)();
         show_data(response)
 
@@ -127,18 +139,22 @@ function updateInfo(obj) {
 
 }
 
+
 function show_data(response) {
     $('.record').remove();
     $(response).each(function( index, el) {
         if(el[1] !== ''){
 
-            desc = el[1].replace(/\s+/g, ' ').split(' ').slice(2);
-            address = el[1].replace(/\s+/g, ' ').split(' ').slice(1);
-            ip = el[1].replace(/\s+/g, ' ').split(' ');
+            text = el[1].replace(/\s+/g, ' ');
+            str = text.replace('# ', '#');
 
-            status = ip[0][0];
-            if(status === '#'){
-                status = '';
+            address = str.replace(/\s+/g, ' ').split(' ').slice(1);
+            desc = str.replace(/\s+/g, ' ').replace('# ', '#').split(' ').slice(2);
+            ip = str.replace(/\s+/g, ' ').split(' ');
+
+            symbol = ip[0][0];
+            status = '';
+            if(symbol === '#'){
                 block_style = 'warning';
                 ip = ip[0].slice(1);
             }else{
@@ -146,52 +162,75 @@ function show_data(response) {
                 block_style = 'success';
                 ip = ip[0];
             }
-            description = '';
-            desc[0] = '';
-            $(desc).each(function( index, el ) {
 
-                if(el !== ' '){
-                    description = description+' '+el
-                }
+            if(ValidateIPaddress(ip)){
 
-            });
-            description = description.replace(/(^\s*)|(\s*)$/g, '');
-            $('.ips_list').append(
-                '<div class="record card_number_'+el[0]+' card m-2 alert-'+block_style+' br-0">' +
-                '<div class="card-body p-1 d-flex justify-content-between px-5">' +
-                '<div class="custom-control custom-switch">' +
-                '<input data-number="'+el[0]+'" onchange="changeStatus(this)" '+status+' type="checkbox" class="custom-control-input" id="customSwitches-'+index+'">' +
-                '<label class="custom-control-label" for="customSwitches-'+index+'"></label>' +
-                '</div>' +
-                '<div class="w-25 dropright">' +
-                '<p data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="m-0 c-p">'+address[0]+'</p>' +
-                '<div class="dropdown-menu">' +
-                '<div class="md-form m-0">' +
-                '<input placeholder="Url" value="'+address[0]+'" type="text" id="url-'+el[0]+'" class="form-control">' +
-                '<input placeholder="Ip"  value="'+ip+'" type="text" id="ip-'+el[0]+'" class="form-control">' +
-                '<input placeholder="Description" value="'+description+'" type="text" id="desc-'+el[0]+'" class="form-control">' +
-                '<div>' +
-                '<button data-number="'+el[0]+'" onclick="updateInfo(this)" type="button" class="d-block save-button btn btn-primary btn-sm">Сохранить</button>' +
-                '<button data-number="'+el[0]+'" onclick="delete_record(this)" type="button" class="d-block save-button btn btn-danger btn-sm">Удалить</button>' +
-                '</div>'+
-                '</div>' +
-                '</div>' +
-                '</div>' +
-                '<div class="w-25">' +
-                '<p class="m-0">'+ip+'</p>' +
-                '</div>' +
-                '<div class="w-25">' +
-                '<p class="m-0">'+description+'</p>' +
-                '</div>' +
-                '</div>' +
-                '</div>'
-            );
+                description = '';
+                $(desc).each(function( index, el ) {
+
+                    if(el !== ' '){
+                        description = description+' '+el
+                    }
+
+                });
+
+                description = description.replace(/(^\s*)|(\s*)$/g, '').slice(1);
+
+                $('.ips_list').append(
+                    '<div class="record card_number_'+el[0]+' card m-2 alert-'+block_style+' br-0">' +
+                    '<div class="card-body p-1 d-flex justify-content-between px-5">' +
+                    '<div class="custom-control custom-switch">' +
+                    '<input data-number="'+el[0]+'" onchange="changeStatus(this)" '+status+' type="checkbox" class="custom-control-input" id="customSwitches-'+index+'">' +
+                    '<label class="custom-control-label" for="customSwitches-'+index+'"></label>' +
+                    '</div>' +
+                    '<div class="w-25 dropright">' +
+                    '<p data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="m-0 c-p">'+address[0]+'</p>' +
+                    '<div class="dropdown-menu">' +
+                    '<div class="md-form m-0">' +
+                    '<input placeholder="Url" value="'+address[0]+'" type="text" id="url-'+el[0]+'" class="form-control">' +
+                    '<input placeholder="Ip"  value="'+ip+'" type="text" id="ip-'+el[0]+'" class="form-control">' +
+                    '<input placeholder="Description" value="'+description+'" type="text" id="desc-'+el[0]+'" class="form-control">' +
+                    '<div>' +
+                    '<button data-number="'+el[0]+'" onclick="updateInfo(this)" type="button" class="d-block save-button btn btn-primary btn-sm">Сохранить</button>' +
+                    '<button data-number="'+el[0]+'" onclick="delete_record(this)" type="button" class="d-block save-button btn btn-danger btn-sm">Удалить</button>' +
+                    '</div>'+
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="w-25">' +
+                    '<p class="m-0">'+ip+'</p>' +
+                    '</div>' +
+                    '<div class="w-25">' +
+                    '<p class="m-0">'+description+'</p>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>'
+                );
+            }
+
         }
     });
 
 }
 
+/**
+ * @return {number}
+ */
+function ValidateIPaddress(ip) {
+
+    var ipv4 = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    var ipv6 = /((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/;
+
+    if (ipv4.test(ip) || ipv6.test(ip)) {
+        return 1;
+    }
+
+
+}
+
 $(document).ready(function() {
+
+
     function disableF5(e) { if ((e.which || e.keyCode) == 116) e.preventDefault(); };
     $(document).on("keydown", disableF5);
 
