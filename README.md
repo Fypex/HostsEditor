@@ -1,5 +1,5 @@
 # Hosts editor
-
+![enter image description here](https://raw.githubusercontent.com/Fypex/hosts-editor/master/screen.png)
 ##### Introduction
 
 This sources use web technologies together with the eel plugin, the operation of these sources depends on the presence of a chrome browser on your computer
