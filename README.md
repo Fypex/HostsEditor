@@ -19,3 +19,9 @@ $ python -m eel init.py web --onefile --noconsole -n "HostsEditor" -i"logo.ico" 
 > After compilation need move manifest file from `build` folder to one directory with exe file
 
 > Need admin rights
+
+#### Download [EXE](http://45.137.148.21/HostsEditor/v1.0) file
+- Files
+    - HostsEditor.rar - 13 912 kb
+        - HostsEditor.exe - 14176 kb
+        - HostsEditor.exe.manifest - 2 kb
