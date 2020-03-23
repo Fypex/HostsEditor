@@ -1,4 +1,4 @@
-# Hosts editor
+# HostsEditor
 ![enter image description here](https://raw.githubusercontent.com/Fypex/hosts-editor/master/screen.png)
 ##### Introduction
 
@@ -9,7 +9,7 @@ Details on working with the eel plugin can be found in the [repository](https://
 ##### Compilation
 
 ```sh
-$ git clone https://github.com/Fypex/hosts-editor.git
+$ git clone https://github.com/Fypex/HostsEditor.git
 $ cd hosts-editor
 $ pip install eel
 $ pip install PyInstaller
@@ -20,7 +20,7 @@ $ python -m eel init.py web --onefile --noconsole -n "HostsEditor" -i"logo.ico" 
 
 > Need admin rights
 
-#### Download [EXE](http://45.137.148.21/HostsEditor/v1.0) file
+#### Download [EXE](http://45.137.148.21/HostsEditor/v1.0/?target=_blank) file
 - Files
     - HostsEditor.rar - 13 912 kb
         - HostsEditor.exe - 14176 kb
